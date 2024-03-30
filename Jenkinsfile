@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        DOTNET_CLI_HOME = "C:\\Program Files\\dotnet"
-    }
+    // environment {
+    //     DOTNET_CLI_HOME = "C:\\Program Files\\dotnet"
+    // }
 
     stages {
         stage('Checkout') {
@@ -34,35 +34,35 @@ pipeline {
             }
         }
 
-        stage('Publish') {
-            steps {
-                script {
-                    // Publishing the application
-                    bat "dotnet publish --no-restore --configuration Release --output .\\publish"
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'coreuser', passwordVariable: 'CREDENTIAL_PASSWORD', usernameVariable: 'CREDENTIAL_USERNAME')]) {
-                    powershell '''
+        // stage('Publish') {
+        //     steps {
+        //         script {
+        //             // Publishing the application
+        //             bat "dotnet publish --no-restore --configuration Release --output .\\publish"
+        //         }
+        //     }
+        // }
+        // stage('Deploy') {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'coreuser', passwordVariable: 'CREDENTIAL_PASSWORD', usernameVariable: 'CREDENTIAL_USERNAME')]) {
+        //             powershell '''
                     
-                    $credentials = New-Object System.Management.Automation.PSCredential($env:CREDENTIAL_USERNAME, (ConvertTo-SecureString $env:CREDENTIAL_PASSWORD -AsPlainText -Force))
+        //             $credentials = New-Object System.Management.Automation.PSCredential($env:CREDENTIAL_USERNAME, (ConvertTo-SecureString $env:CREDENTIAL_PASSWORD -AsPlainText -Force))
 
                     
-                    New-PSDrive -Name X -PSProvider FileSystem -Root "\\\\LAPTOP-DFRQ3ILG\\coreapp" -Persist -Credential $credentials
+        //             New-PSDrive -Name X -PSProvider FileSystem -Root "\\\\LAPTOP-DFRQ3ILG\\coreapp" -Persist -Credential $credentials
 
                     
-                    Copy-Item -Path '.\\publish\\*' -Destination 'X:\' -Force
+        //             Copy-Item -Path '.\\publish\\*' -Destination 'X:\' -Force
 
                     
-                    Remove-PSDrive -Name X
-                    '''
-                }
-                }
-            }
-        }
+        //             Remove-PSDrive -Name X
+        //             '''
+        //         }
+        //         }
+        //     }
+        // }
     }
 
     post {
